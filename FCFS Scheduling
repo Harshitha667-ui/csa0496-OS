@@ -1,0 +1,52 @@
+FCFS Scheduling
+#include&lt;stdio.h&gt;
+struct Process{
+int pid;
+int burstTime;
+int waitingTime;
+int turnaroundTime;
+};
+void calculateWaitingtime(struct Process processes[],int n)
+{
+processes[0].waitingTime=0;
+for(int i=1;i&lt;n;i++)
+{
+processes[i].waitingTime=processes[i-1].waitingTime+processes[i-1].burstTime;
+}
+}
+
+void calculateturnaroundTime(struct Process processes[],int n)
+{
+for(int i=0;i&lt;n;i++)
+{
+processes[i].turnaroundTime=processes[i].burstTime+processes[i].waitingTime;
+}
+}
+void printprocess(struct Process processes[],int n )
+{
+printf(&quot;PID\t\tBURST_TIME\tWAITING_TIME\tTURNAROUNDTIME\n&quot;);
+for(int i=0;i&lt;n;i++)
+{
+
+printf(&quot;%d\t\t%d\t\t%d\t\t%d\n&quot;,processes[i].pid,processes[i].burstTime,processes[i].waitingTime,proc
+esses[i].turnaroundTime);
+}
+}
+int main()
+{
+printf(&quot;enter the number of processes required:\n&quot;);
+int n;
+scanf(&quot;%d&quot;,&amp;n);
+struct Process processes[n];
+for(int i=0;i&lt;n;i++)
+{
+printf(&quot;enter the burst time for process %d&quot;,i);
+processes[i].pid=i;
+scanf(&quot;%d&quot;,&amp;processes[i].burstTime);
+}
+
+calculateWaitingtime(processes,n);
+calculateturnaroundTime(processes,n);
+printprocess(processes,n);
+return 0;
+}
