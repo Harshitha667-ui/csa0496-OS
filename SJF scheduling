@@ -1,0 +1,71 @@
+SJF Scheduling
+#include&lt;stdio.h&gt;
+struct Process{
+int pid;
+int burstTime;
+int waitingTime;
+int turnaroundTime;
+};
+void sortProcessesByBurstTime(struct Process processes[],int n)
+{
+struct Process temp;
+for (int i=0;i&lt;n-1;i++)
+
+{
+for(int j=i+1;j&lt;n;j++)
+{
+if(processes[i].burstTime&gt;processes[j].burstTime)
+{
+temp=processes[i];
+processes[i]=processes[j];
+processes[j]=temp;
+}
+}
+}
+
+}
+void calculatewaitingtime(struct Process processes[],int n)
+{
+processes[0].waitingTime=0;
+for(int i=1;i&lt;n;i++)
+{
+processes[i].waitingTime=processes[i-1].waitingTime+processes[i-1].burstTime;
+}
+}
+void calculateturnaroundTime(struct Process processes[],int n)
+{
+for(int i=0;i&lt;n;i++)
+{
+processes[i].turnaroundTime=processes[i].burstTime+processes[i].waitingTime;
+}
+}
+void printProcess(struct Process processes[],int n)
+
+{
+printf(&quot;PID\tBurst_Time\tWaiting_Time\tTurn_Around_Time\n&quot;);
+for(int i=0;i&lt;n;i++)
+{
+
+printf(&quot;%d\t\t%d\t\t%d\t\t%d\n&quot;,processes[i].pid,processes[i].burstTime,processes[i].waitingTime,proc
+esses[i].turnaroundTime);
+}
+}
+int main()
+{
+int n;
+printf(&quot;enter the number of processes:\n&quot;);
+scanf(&quot;%d&quot;,&amp;n);
+struct Process processes[n];
+for(int i=0;i&lt;n;i++)
+{
+processes[i].pid=i;
+printf(&quot;enter the burst time of the process%d&quot;,i);
+scanf(&quot;%d&quot;,&amp;processes[i].burstTime);
+}
+sortProcessesByBurstTime(processes,n);
+calculatewaitingtime(processes,n);
+calculateturnaroundTime(processes,n);
+printf(&quot;SHORTESTJOBFIRST SCHEDULING:\n&quot;);
+printProcess(processes,n);
+return 0;
+}
