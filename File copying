@@ -1,0 +1,39 @@
+FILE COPYING
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+void copyFile(const char*sourceFile,const char* destinationFile)
+{
+char ch;
+FILE *source,*dest;
+source=fopen(sourceFile,&quot;r&quot;);
+if(source==NULL)
+{ printf(&quot;error!source file cannot be opened.\n&quot;);
+exit(EXIT_FAILURE);
+}
+dest=fopen(destinationFile,&quot;w&quot;);
+if(dest==NULL)
+{
+printf(&quot;error!destination file cannot be opened.\n&quot;);
+
+fclose(source);
+exit(EXIT_FAILURE);
+}
+while((ch=fgetc(source))!=EOF)
+{
+fputc(ch,dest);
+
+}
+printf(&quot;file copied successfully\n&quot;);
+fclose(dest);
+fclose(source);
+
+}
+int main()
+{ char sourceFile[100],destinationFile[100];
+printf(&quot;enter the source file:\n&quot;);
+scanf(&quot;%s&quot;,sourceFile);
+printf(&quot;enter the destination file name\n&quot;);
+scanf(&quot;%s&quot;,destinationFile);
+copyFile(sourceFile,destinationFile);
+return 0;
+}
