@@ -1,0 +1,88 @@
+LRU Paging
+
+#include &lt;stdio.h&gt;
+#define MAX_FRAMES 10
+#define MAX_PAGES 50
+// Function to find the least recently used page index
+int findLRU(int time[], int num_frames) {
+int min_time = time[0], pos = 0;
+for (int i = 1; i &lt; num_frames; i++) {
+if (time[i] &lt; min_time) {
+min_time = time[i];
+pos = i;
+}
+}
+return pos;
+}
+// LRU Page Replacement Algorithm
+void lruPageReplacement(int pages[], int num_pages, int num_frames) {
+int frames[MAX_FRAMES]; // Frame buffer
+int time[MAX_FRAMES]; // Track last used time
+int page_faults = 0;
+// Initialize frames and timestamps
+for (int i = 0; i &lt; num_frames; i++) {
+frames[i] = -1;
+time[i] = 0;
+}
+printf(&quot;\nPage Reference | Frames\n&quot;);
+printf(&quot;------------------------\n&quot;);
+for (int i = 0; i &lt; num_pages; i++) {
+printf(&quot;%12d | &quot;, pages[i]);
+int found = 0;
+// Check if the page is already in frames
+for (int j = 0; j &lt; num_frames; j++) {
+if (frames[j] == pages[i]) {
+found = 1;
+time[j] = i; // Update last used time
+
+break;
+}
+}
+// If the page is not found, replace LRU page
+if (!found) {
+int pos = -1;
+// Find an empty frame first
+for (int j = 0; j &lt; num_frames; j++) {
+if (frames[j] == -1) {
+pos = j;
+break;
+}
+}
+// If no empty frame, find LRU page
+if (pos == -1) {
+pos = findLRU(time, num_frames);
+}
+frames[pos] = pages[i];
+time[pos] = i;
+page_faults++;
+}
+// Print the current frame state
+for (int j = 0; j &lt; num_frames; j++) {
+if (frames[j] != -1)
+printf(&quot;%d &quot;, frames[j]);
+else
+printf(&quot;- &quot;);
+}
+printf(&quot;\n&quot;);
+}
+printf(&quot;\nTotal Page Faults: %d\n&quot;, page_faults);
+}
+int main() {
+int num_pages, num_frames;
+int pages[MAX_PAGES];
+// Input: Number of pages
+printf(&quot;Enter number of pages: &quot;);
+scanf(&quot;%d&quot;, &amp;num_pages);
+
+// Input: Page reference string
+printf(&quot;Enter the page reference string: &quot;);
+for (int i = 0; i &lt; num_pages; i++) {
+scanf(&quot;%d&quot;, &amp;pages[i]);
+}
+// Input: Number of frames
+printf(&quot;Enter number of frames: &quot;);
+scanf(&quot;%d&quot;, &amp;num_frames);
+// Run LRU page replacement
+lruPageReplacement(pages, num_pages, num_frames);
+return 0;
+}
