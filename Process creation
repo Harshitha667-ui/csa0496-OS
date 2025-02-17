@@ -1,0 +1,26 @@
+1.PROCESS CREATION
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;unistd.h&gt;
+int main()
+{
+pid_t pid=fork();
+if(pid&lt;0)
+{
+perror(&quot;fork failed.\n&quot;);
+exit(EXIT_FAILURE);
+}
+else if(pid==0)
+{
+printf(&quot;child process.\n&quot;);
+printf(&quot;child id:%d\n&quot;,getpid());
+printf(&quot;parentid:%d\n&quot;,getppid());
+}
+else
+{
+printf(&quot;parent process.\n&quot;);
+printf(&quot;parent id:%d\n&quot;,getpid());
+printf(&quot;child id:%d\n&quot;,pid);
+}
+return 0;
+}
