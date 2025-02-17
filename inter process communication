@@ -1,0 +1,49 @@
+2) Inter-process communication
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/wait.h&gt; // Include this header for wait()
+
+#define BUFFER_SIZE 100
+
+int main() {
+int pipefd[2]; // Array to hold the read and write file descriptors
+pid_t pid;
+char buffer[BUFFER_SIZE];
+
+// Create a pipe
+if (pipe(pipefd) == -1) {
+perror(&quot;pipe&quot;);
+exit(EXIT_FAILURE);
+
+}
+
+// Create a child process
+pid = fork();
+if (pid == -1) {
+perror(&quot;fork&quot;);
+exit(EXIT_FAILURE);
+}
+
+if (pid == 0) { // Child process
+close(pipefd[1]); // Close the write end of the pipe
+
+// Read from the pipe
+read(pipefd[0], buffer, BUFFER_SIZE);
+printf(&quot;Child process received: %s\n&quot;, buffer);
+
+close(pipefd[0]); // Close the read end of the pipe
+exit(EXIT_SUCCESS);
+} else { // Parent process
+close(pipefd[0]); // Close the read end of the pipe
+
+// Write to the pipe
+const char *message = &quot;Hello from the parent process!&quot;;
+write(pipefd[1], message, strlen(message) + 1); // +1 to include the null terminator
+
+close(pipefd[1]); // Close the write end of the pipe
+wait(NULL); // Wait for the child process to finish
+exit(EXIT_SUCCESS);
+}
+}
