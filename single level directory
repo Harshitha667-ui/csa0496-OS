@@ -1,0 +1,133 @@
+single level directory
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_FILES 10
+#define MAX_FILENAME_LENGTH 100
+
+// Structure to represent a file in the directory
+typedef struct {
+    char name[MAX_FILENAME_LENGTH];
+    int size; // Size of the file (in bytes)
+} File;
+
+// Structure for the directory (single-level)
+typedef struct {
+    File files[MAX_FILES];
+    int count; // Number of files in the directory
+} Directory;
+
+// Function to initialize the directory
+void initDirectory(Directory *dir) {
+    dir->count = 0; // Initially, no files are in the directory
+}
+
+// Function to add a file to the directory
+void addFile(Directory *dir, const char *filename, int size) {
+    if (dir->count >= MAX_FILES) {
+        printf("Directory is full, cannot add more files.\n");
+        return;
+    }
+    
+    // Adding the file to the directory
+    strcpy(dir->files[dir->count].name, filename);
+    dir->files[dir->count].size = size;
+    dir->count++;
+    printf("File '%s' added successfully.\n", filename);
+}
+
+// Function to list all files in the directory
+void listFiles(const Directory *dir) {
+    if (dir->count == 0) {
+        printf("No files in the directory.\n");
+        return;
+    }
+    
+    printf("Files in the directory:\n");
+    for (int i = 0; i < dir->count; i++) {
+        printf("File: %s, Size: %d bytes\n", dir->files[i].name, dir->files[i].size);
+    }
+}
+
+// Function to remove a file from the directory
+void removeFile(Directory *dir, const char *filename) {
+    int found = 0;
+    for (int i = 0; i < dir->count; i++) {
+        if (strcmp(dir->files[i].name, filename) == 0) {
+            // Shift remaining files to fill the gap
+            for (int j = i; j < dir->count - 1; j++) {
+                dir->files[j] = dir->files[j + 1];
+            }
+            dir->count--;
+            found = 1;
+            printf("File '%s' removed successfully.\n", filename);
+            break;
+        }
+    }
+    
+    if (!found) {
+        printf("File '%s' not found in the directory.\n", filename);
+    }
+}
+
+// Function to search for a file in the directory
+void searchFile(const Directory *dir, const char *filename) {
+    for (int i = 0; i < dir->count; i++) {
+        if (strcmp(dir->files[i].name, filename) == 0) {
+            printf("File '%s' found. Size: %d bytes\n", dir->files[i].name, dir->files[i].size);
+            return;
+        }
+    }
+    printf("File '%s' not found in the directory.\n", filename);
+}
+
+int main() {
+    Directory dir;
+    initDirectory(&dir); // Initialize the directory
+
+    int choice;
+    char filename[MAX_FILENAME_LENGTH];
+    int size;
+
+    while (1) {
+        printf("\nDirectory Operations:\n");
+        printf("1. Add File\n");
+        printf("2. List Files\n");
+        printf("3. Remove File\n");
+        printf("4. Search File\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the filename: ");
+                scanf("%s", filename);
+                printf("Enter the file size (in bytes): ");
+                scanf("%d", &size);
+                addFile(&dir, filename, size);
+                break;
+            case 2:
+                listFiles(&dir);
+                break;
+            case 3:
+                printf("Enter the filename to remove: ");
+                scanf("%s", filename);
+                removeFile(&dir, filename);
+                break;
+            case 4:
+                printf("Enter the filename to search: ");
+                scanf("%s", filename);
+                searchFile(&dir, filename);
+                break;
+            case 5:
+                printf("Exiting the program.\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
